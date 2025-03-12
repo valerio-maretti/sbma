@@ -1,0 +1,20 @@
+stages:
+  - test
+
+pytest:
+  stage: test
+  image: python:3.12
+  script:
+    - python -m pip install --upgrade pip
+    - python -m pip install pytest
+    - python -m pip install .
+    - pytest --junitxml=report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+
+sast:
+  stage: test
+include:
+  - template: Security/SAST.gitlab-ci.yml
