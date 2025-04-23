@@ -6,9 +6,9 @@ from setuptools import Extension, setup
 def get_ext_modules():
     import numpy
 
-    if sys.platform == "win32":
-        extra_compile_args = ["/O2", "/arch:AVX2", "-std=c++11"]  # "/W4"
-    else:
+    if sys.platform == "win32":  # no c++11 for cl
+        extra_compile_args = ["/O2", "/arch:AVX2"]  # "/W4"
+    else:  # for back compatibility
         extra_compile_args = ["-O2", "-march=native", "-std=c++11"]  # "-Wall"
 
     ext_kwargs = {
