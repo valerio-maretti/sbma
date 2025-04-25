@@ -200,3 +200,64 @@ print(f"Total score achieved:\n{output_sum}")
 
 Check the `solve` docstring to see the optional parameters related to the stop
 conditions and the verbosity.
+
+## Benchmark against OR-Tools
+
+To evaluate the performance of the solver, it is benchmarked against OR-Tools, 
+the Google optimization library using randomly generated data.<br>
+The solver completes in milliseconds compared to OR-Tools, which requires minutes 
+for similar inputs. The final score achieved is nearly identical to OR-Tools,
+with a difference of less than 1%.
+
+The problem is reformulated for the linear solver as follows:
+
+**Objective**: Maximize the total score of assignments:
+```math
+\begin{equation*}
+\text{Maximize} \sum_{i=0}^{n_{\text{items}}-1} \sum_{j=0}^{n_{\text{recipients}}-1} \text{mat}[i, j] \cdot x[i, j]
+\end{equation*}
+```
+  where `x[i, j]` is a binary variable indicating whether item `i` is assigned to recipient `j` (1 if assigned, 0 otherwise).
+
+**Constraints**:
+- Each item is assigned to exactly one recipient:
+```math
+\begin{equation*}
+\sum_{j=0}^{n_{\text{recipients}}-1} x[i, j] = 1 \quad \text{for all} \quad i = 0, \dots, n_{\text{items}}-1
+\end{equation*} 
+```
+
+- Each recipient receives exactly `ar_counts[j]` items:
+```math
+\begin{equation*}
+\sum_{i=0}^{n_{\text{items}}-1} x[i, j] = \text{counts}_j \quad \text{for all} \quad j = 0, \dots, n_{\text{recipients}}-1
+\end{equation*}
+```
+
+- Non-negativity and upper bound:
+```math
+\begin{equation*}
+0 \leq x[i, j] \leq 1 \quad \text{for all} \quad i, j
+\end{equation*}
+```
+
+The problem’s constraint matrix is totally unimodular, allowing continuous variables
+```math
+\begin{equation*}
+x[i, j] \in [0, 1] \quad \text{for all} \quad i, j
+\end{equation*}
+```
+to yield integer solutions when solved as an LP, making it efficient for solvers like OR-Tools.
+
+### Results
+```
+====================================================================
+Matrix Size    | Solver            | OR-tools          | delta score
+[rows x cols]  | Time(s) |  Score  | Time(s) |  Score  |     [%]
+--------------------------------------------------------------------
+7207 x 150     | 0.0061  | 7139.79 |   180   | 7148.01 |   -0.12%
+7208 x 150     | 0.0085  | 7136.76 |   179   | 7145.25 |   -0.12%
+8123 x 150     | 0.0065  | 8052.45 |   227   | 8060.10 |   -0.09%
+7074 x 150     | 0.0064  | 7006.99 |   213   | 7015.34 |   -0.12%
+7574 x 150     | 0.0071  | 7506.62 |   214   | 7514.61 |   -0.11%
+```

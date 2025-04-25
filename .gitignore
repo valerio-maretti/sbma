@@ -26,7 +26,6 @@ wheels/
 
 # Private
 experiments/
-benchmarks/
 
 # Virtual Environment
 venv/
