@@ -91,12 +91,12 @@ def solve_with_ortools(
     return assignment_dict, notes, total_score
 
 
-def benchmark_against_ortools():
+def benchmark_against_ortools(n_cols: int = 100, max_count: int = 50):
     """Benchmark against OR-tools."""
     benchmark = []
     for seed in range(5):
         print(f"{seed=}")
-        mat, ar_counts = generate_random_input(150, 100, seed=seed, order="C")
+        mat, ar_counts = generate_random_input(n_cols, max_count, seed=seed, order="C")
         shape = mat.shape
 
         start = time()
@@ -111,24 +111,26 @@ def benchmark_against_ortools():
 
     table = [
         "Benchmark against OR-tools",
-        "=" * 68,
-        "Matrix Size    | Solver            | OR-tools          | delta score",
-        "[rows x cols]  | Time(s) |  Score  | Time(s) |  Score  |     [%]",
-        "-" * 68
+        "=" * 81,
+        "Matrix Size    | Solver            | OR-tools          | Delta Score | Time Ratio",
+        "[rows x cols]  | Time(s) |  Score  | Time(s) |  Score  |     [%]     |    [*]",
+        "-" * 81
     ]
 
-    for shape, score_sum, end, score_ortools, end_ortools in benchmark:
+    for shape, score_sum, t_cpp, score_ortools, t_ortools in benchmark:
         matrix_size = f"{shape[0]} x {shape[1]}"
-        end_ortools = int(end_ortools)
         delta = ((score_sum - score_ortools) / score_ortools * 100) if score_ortools != 0 else 0.0
+        speedup = round(t_ortools / t_cpp) if t_cpp else 0
+        speedup_str = f"{speedup}" if speedup else " N/A"
 
-        row_str = (f"{matrix_size:<14} | {end:>6.4f}  | {score_sum:>7.2f} | "
-                   f"  {end_ortools:<5,} | {score_ortools:>7.2f} | {delta:>7.2f}%")
+        row_str = (f"{matrix_size:<14} | {t_cpp:>6.4f}  | {score_sum:>7.2f} | "
+                   f"  {t_ortools:<4.1f}  | {score_ortools:>7.2f} |"
+                   f" {delta:>7.2f}%    |  {speedup_str:>3s}")
         table.append(row_str)
 
     return "\n".join(table)
 
 
 if __name__ == "__main__":
-    result_benchmark = benchmark_against_ortools()
+    result_benchmark = benchmark_against_ortools(n_cols=100, max_count=100)
     print(result_benchmark)
