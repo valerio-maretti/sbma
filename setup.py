@@ -8,11 +8,11 @@ def get_ext_modules():
     import numpy
 
     if sys.platform == "win32":
-        extra_compile_args = ["/O2", "/arch:AVX2"]  # "/W4"
-        # extra_compile_args = []  # "/W4"
+        # extra_compile_args = ["/O2", "/arch:AVX2", "-std=c++11"]  # "/W4"
+        extra_compile_args = ["/std:c++11"]  # "/W4"
     else:
-        extra_compile_args = ["-O2", "-march=native", "-std=c++11"]  # "-Wall"
-        # extra_compile_args = ["-std=c++11"]  # "-Wall"
+        # extra_compile_args = ["-O2", "-march=native", "-std=c++11"]  # "-Wall"
+        extra_compile_args = ["-std=c++11"]  # "-Wall"
 
     ext_kwargs = {
         "include_dirs": [numpy.get_include()],
