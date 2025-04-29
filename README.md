@@ -241,23 +241,32 @@ The problem is reformulated for the linear solver as follows:
 \end{equation*}
 ```
 
-The problem’s constraint matrix is totally unimodular, allowing continuous variables
-```math
-\begin{equation*}
-x[i, j] \in [0, 1] \quad \text{for all} \quad i, j
-\end{equation*}
-```
-to yield integer solutions when solved as an LP, making it efficient for solvers like OR-Tools.
+The problem’s constraint matrix is totally unimodular, allowing continuous variables to yield integer solutions when solved as an LP, making it efficient for solvers like OR-Tools.
 
 ### Results
 ```
-====================================================================
-Matrix Size    | Solver            | OR-tools          | delta score
-[rows x cols]  | Time(s) |  Score  | Time(s) |  Score  |     [%]
---------------------------------------------------------------------
-7207 x 150     | 0.0061  | 7139.79 |   180   | 7148.01 |   -0.12%
-7208 x 150     | 0.0085  | 7136.76 |   179   | 7145.25 |   -0.12%
-8123 x 150     | 0.0065  | 8052.45 |   227   | 8060.10 |   -0.09%
-7074 x 150     | 0.0064  | 7006.99 |   213   | 7015.34 |   -0.12%
-7574 x 150     | 0.0071  | 7506.62 |   214   | 7514.61 |   -0.11%
+Benchmark against OR-tools (~5000 x 100 Input Matrix)
+=================================================================================
+Matrix Size    | Solver            | OR-tools          | Delta Score | Time Ratio
+[rows x cols]  | Time(s) |  Score  | Time(s) |  Score  |     [%]     |     
+---------------------------------------------------------------------------------
+4785 x 100     | 0.0040  | 4720.75 |  46.7   | 4726.88 |   -0.13%    |  ~11670
+4568 x 100     | 0.0025  | 4503.50 |  42.1   | 4509.85 |   -0.14%    |  ~16769
+5492 x 100     | 0.0045  | 5421.23 |  58.8   | 5427.56 |   -0.12%    |  ~13041
+4705 x 100     | 0.0040  | 4641.18 |  43.9   | 4647.40 |   -0.13%    |  ~10979
+5179 x 100     | 0.0035  | 5111.92 |  54.6   | 5117.98 |   -0.12%    |  ~15534
+
+
+Benchmark against OR-tools (~7500 x 150 Input Matrix)
+=================================================================================
+Matrix Size    | Solver            | OR-tools          | Delta Score | Time Ratio
+[rows x cols]  | Time(s) |  Score  | Time(s) |  Score  |     [%]     |     
+---------------------------------------------------------------------------------
+7207 x 150     | 0.0061  | 7139.79 |  180.1  | 7148.01 |   -0.12%    |  ~29525
+7208 x 150     | 0.0085  | 7136.76 |  179.6  | 7145.25 |   -0.12%    |  ~21129
+8123 x 150     | 0.0065  | 8052.45 |  227.0  | 8060.10 |   -0.09%    |  ~34923
+7074 x 150     | 0.0064  | 7006.99 |  213.3  | 7015.34 |   -0.12%    |  ~33328
+7574 x 150     | 0.0071  | 7506.62 |  214.2  | 7514.61 |   -0.11%    |  ~30169
+
+* Time Ratio approximates OR-Tools time divided by the SBMA solver time.
 ```
