@@ -7,12 +7,6 @@
 #include <ctime>
 #include "_util.hpp"
 
-#ifdef __GNUC__
-    #define PREFETCH(addr) __builtin_prefetch(addr)
-#else
-    #define PREFETCH(addr) ((void)0)
-#endif
-
 DataColumn* data_columns = nullptr;
 bool* previously_unchanged = nullptr;
 bool* previously_unchanged_temp = nullptr;
@@ -199,54 +193,56 @@ static float calculate_gains(
     const size_t n_cols,
     const size_t idx_col_other
 ) {
-    //  15% / 20% faster than the equivalent
-    // for (int i = 0; i < count; i++) {
-    //     float v = mat[ar_idx[i] * n_cols + idx_col_other] - ar_val[i];
-    //     ar_gain[i] = v;
-    //     max_gain = (v > max_gain_a) ? v : max_gain_a;
-    // }
+    // 15% / 20% faster than the equivalent
     float max_gain = -INFINITY;
-    int i = 0;
-    float gain0, gain1, gain2, gain3;
-
-    if (count < 4) {
-        goto handle_remainder;
+    for (int i = 0; i < count; i++) {
+        float v = mat[ar_idx[i] * n_cols + idx_col_other] - ar_val[i];
+        ar_gain[i] = v;
+        max_gain = (v > max_gain) ? v : max_gain;
     }
 
-    for (int j = 0; j < 4 && j < count; j++) {
-        PREFETCH(&mat[ar_idx[j] * n_cols + idx_col_other]);
-        PREFETCH(&ar_val[j]);
-    }
-
-    for (; i < count - 3; i += 4) {
-        if (i + 8 < count) {
-            PREFETCH(&mat[ar_idx[i + 8] * n_cols + idx_col_other]);
-            PREFETCH(&ar_val[i + 8]);
-        }
-
-        gain0 = mat[ar_idx[i] * n_cols + idx_col_other] - ar_val[i];
-        gain1 = mat[ar_idx[i+1] * n_cols + idx_col_other] - ar_val[i+1];
-        gain2 = mat[ar_idx[i+2] * n_cols + idx_col_other] - ar_val[i+2];
-        gain3 = mat[ar_idx[i+3] * n_cols + idx_col_other] - ar_val[i+3];
-
-        ar_gain[i] = gain0;
-        max_gain = gain0 > max_gain ? gain0 : max_gain;
-
-        ar_gain[i+1] = gain1;
-        max_gain = gain1 > max_gain ? gain1 : max_gain;
-
-        ar_gain[i+2] = gain2;
-        max_gain = gain2 > max_gain ? gain2 : max_gain;
-
-        ar_gain[i+3] = gain3;
-        max_gain = gain3 > max_gain ? gain3 : max_gain;
-    }
-
-handle_remainder:
-    for (; i < count; i++) {
-        ar_gain[i] = mat[ar_idx[i] * n_cols + idx_col_other] - ar_val[i];
-        max_gain = ar_gain[i] > max_gain ? ar_gain[i] : max_gain;
-    }
+//    float max_gain = -INFINITY;
+//    int i = 0;
+//    float gain0, gain1, gain2, gain3;
+//
+//    if (count < 4) {
+//        goto handle_remainder;
+//    }
+//
+//    for (int j = 0; j < 4 && j < count; j++) {
+//        PREFETCH(&mat[ar_idx[j] * n_cols + idx_col_other]);
+//        PREFETCH(&ar_val[j]);
+//    }
+//
+//    for (; i < count - 3; i += 4) {
+//        if (i + 8 < count) {
+//            PREFETCH(&mat[ar_idx[i + 8] * n_cols + idx_col_other]);
+//            PREFETCH(&ar_val[i + 8]);
+//        }
+//
+//        gain0 = mat[ar_idx[i] * n_cols + idx_col_other] - ar_val[i];
+//        gain1 = mat[ar_idx[i+1] * n_cols + idx_col_other] - ar_val[i+1];
+//        gain2 = mat[ar_idx[i+2] * n_cols + idx_col_other] - ar_val[i+2];
+//        gain3 = mat[ar_idx[i+3] * n_cols + idx_col_other] - ar_val[i+3];
+//
+//        ar_gain[i] = gain0;
+//        max_gain = gain0 > max_gain ? gain0 : max_gain;
+//
+//        ar_gain[i+1] = gain1;
+//        max_gain = gain1 > max_gain ? gain1 : max_gain;
+//
+//        ar_gain[i+2] = gain2;
+//        max_gain = gain2 > max_gain ? gain2 : max_gain;
+//
+//        ar_gain[i+3] = gain3;
+//        max_gain = gain3 > max_gain ? gain3 : max_gain;
+//    }
+//
+//handle_remainder:
+//    for (; i < count; i++) {
+//        ar_gain[i] = mat[ar_idx[i] * n_cols + idx_col_other] - ar_val[i];
+//        max_gain = ar_gain[i] > max_gain ? ar_gain[i] : max_gain;
+//    }
     return max_gain;
 }
 
