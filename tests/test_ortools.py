@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from sbma.bachmarks.ortools_assignment import solve_with_ortools
+from sbma.benchmarks.ortools_assignment import solve_with_ortools
 from sbma.solver import assert_results, generate_random_input
 
 
