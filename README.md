@@ -109,7 +109,7 @@ compared to many hours with free / commercial solvers.
 ```
 Benchmark with Intel Core Ultra 7 155H (5 runs test case with random generated data)
 ========================================================================================================
-Matrix Size             | Order | Refinement Phase        | Swapping Phase           | Iters | Improve |
+Matrix Size             | Order | Initial Phase           | Refinement Phase         | Iters | Improve |
 [rows x cols]    | [MB] |       | Time(ms)      | Score   | Time(ms)       | Score   |       |         |
 --------------------------------------------------------------------------------------------------------
 49,242 x 200     | 38   | C     | 38 ±6         | 48786   | 163 ±13        | 48927   | 6     | 0.2886% |
