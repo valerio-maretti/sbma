@@ -63,7 +63,7 @@ static PyObject* solve(PyObject* self, PyObject* args) {
 
     size_t* out = brute_force_solver(mat, n_rows, n_cols, ar_counts);
 
-    npy_intp dims[] = {n_rows};
+    npy_intp dims[] = {static_cast<npy_intp>(n_rows)};
     PyObject* py_out = PyArray_SimpleNewFromData(1, dims, NPY_UINTP, out);
 
     if (!py_out) {

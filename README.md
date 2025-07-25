@@ -44,7 +44,7 @@ The objective is to maximize the total score across all assignments.
 This is achieved by selecting the combination of items for each recipient that
 results in the highest sum of scores from the input matrix.
 
-Eg: given the score matrix (5 x 3):
+Eg: given the score matrix (6 x 3):
 
 | Item             | Recipient <sub>0</sub> | Recipient <sub>1</sub> | Recipient <sub>2</sub> | 
 |:-----------------|:----------------------:|:----------------------:|:----------------------:|
