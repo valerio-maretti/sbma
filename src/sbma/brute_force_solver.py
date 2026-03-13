@@ -1,7 +1,6 @@
 """For benchmark purposes."""
 
 import numpy as np
-
 from sbma._brute_force_solver import solve as cpp_solve
 
 __all__ = ["solve"]
