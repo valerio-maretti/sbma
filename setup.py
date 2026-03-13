@@ -1,7 +1,10 @@
 import os
+import platform
 import sys
 
 from setuptools import Extension, setup
+
+machine: str = platform.machine().lower()
 
 
 def get_ext_modules():
@@ -11,8 +14,17 @@ def get_ext_modules():
         # extra_compile_args = ["/O2", "/arch:AVX2", "-std=c++11"]  # "/W4"
         extra_compile_args = ["/std:c++11"]  # "/W4"
     else:
-        # extra_compile_args = ["-O2", "-march=native", "-std=c++11"]  # "-Wall"
         extra_compile_args = ["-std=c++11"]  # "-Wall"
+        if sys.platform == "darwin":  # placeholders
+            if "x86_64" in machine:
+                # extra_compile_args.extend(["-O2", "-arch", "x86_64"])
+                pass
+            elif "arm" in machine or "aarch64" in machine:
+                # extra_compile_args.extend(["-O2", "-arch", "arm64"])
+                pass
+        else:
+            # extra_compile_args.extend(["-O2", "-march=native"])  # "-Wall"
+            pass
 
     ext_kwargs = {
         "include_dirs": [numpy.get_include()],

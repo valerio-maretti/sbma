@@ -3,7 +3,7 @@ stages:
 
 pytest:
   stage: test
-  image: python:3.12
+  image: python:3.10
   variables:
     BUILD_WITH_BRUTE_FORCE: "true"
   script:

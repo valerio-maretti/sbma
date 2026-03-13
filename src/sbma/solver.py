@@ -3,7 +3,6 @@
 import warnings
 
 import numpy as np
-
 from sbma._solver import solve as cpp_solve
 
 __all__ = [
