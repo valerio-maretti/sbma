@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sbma"
-version = "1.0.1"
+version = "1.0.2"
 description = "Score Based Multiple Assignment Solver"
 authors = [
   {name = "Valerio Maretti", email = "valerio.maretti@gmail.com"},
