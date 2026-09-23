@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=69", "wheel", "numpy"]
+requires = ["setuptools>=69", "wheel", "numpy>=2.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -12,12 +12,14 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
+# Built against NumPy 2.x headers but targeting the 1.22 C-API (see setup.py),
+# so the published wheels import against both NumPy 1.x and 2.x.
 dependencies = [
-    "numpy",
+    "numpy>=1.22",
 ]
 
 [tool.setuptools]
-packages = ["sbma"]
+packages = ["sbma", "sbma.benchmarks"]
 package-dir = {"" = "src"}
 
 # --- PYTEST CONFIGURATION ---
@@ -37,3 +39,17 @@ ignore = [
     "F403", # May be undefined, or defined from star imports
     "F405", # Import * used; unable to detect undefined names
 ]
+
+# --- CIBUILDWHEEL CONFIGURATION ---
+[tool.cibuildwheel]
+build = ["cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+# No 32-bit builds, no PyPy (the extension targets CPython's C-API).
+skip = ["*-win32", "*_i686", "pp*"]
+build-frontend = "build"
+test-requires = ["pytest"]
+# Only the solver suite: the OR-Tools benchmark and the brute-force extension
+# are development tools and are not part of the published wheels.
+test-command = "pytest {project}/tests/test_solver.py"
+
+[tool.cibuildwheel.macos]
+environment = { MACOSX_DEPLOYMENT_TARGET = "10.13" }

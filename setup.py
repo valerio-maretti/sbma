@@ -28,7 +28,14 @@ def get_ext_modules():
 
     ext_kwargs = {
         "include_dirs": [numpy.get_include()],
-        "define_macros": [("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
+        "define_macros": [
+            ("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION"),
+            # Compile against the NumPy 1.22 C-API even when building with NumPy 2.x
+            # headers, so the resulting binaries import against any NumPy >= 1.22.
+            # Pinned explicitly because the header default is raised over time,
+            # which would silently lift the runtime floor on a later rebuild.
+            ("NPY_TARGET_VERSION", "NPY_1_22_API_VERSION"),
+        ],
         "extra_compile_args": extra_compile_args,
     }
 
