@@ -1,3 +1,11 @@
 include README.md
+include pyproject.toml
+include setup.py
 
-recursive-include * *.py
+# C++ sources and headers must ship in the sdist so it can be compiled
+# on platforms we do not publish wheels for.
+recursive-include src/sbma *.cpp *.hpp
+recursive-include src/sbma *.py
+recursive-include tests *.py
+
+global-exclude *.pyc *.pyd *.so
