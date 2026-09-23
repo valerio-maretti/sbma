@@ -18,6 +18,10 @@ dependencies = [
     "numpy>=1.22",
 ]
 
+[project.urls]
+Homepage = "https://gitlab.com/valerio.maretti/sbma"
+"Source Code" = "https://gitlab.com/valerio.maretti/sbma"
+
 [tool.setuptools]
 packages = ["sbma", "sbma.benchmarks"]
 package-dir = {"" = "src"}
