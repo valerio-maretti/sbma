@@ -1,8 +1,32 @@
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+#include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
 #include "_util.hpp"
 
 #define MAX_MSG_LENGTH 256
+
+
+/*
+ * Write to Python's sys.stdout instead of the C stdout.
+ * The two streams are buffered independently, so plain printf() output ends up
+ * interleaved in the wrong order with print()/logging on the Python side as
+ * soon as stdout is not a terminal (pipe, file, pytest capture, notebook).
+ * Going through sys.stdout keeps everything in a single buffer and makes the
+ * output follow any redirection done from Python.
+ * Safe to call here: the extension never releases the GIL.
+ */
+void py_print(const char* fmt, ...) {
+    char buf[MAX_MSG_LENGTH * 2];
+    va_list args;
+
+    va_start(args, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
+
+    PySys_WriteStdout("%s", buf);
+}
 
 
 void clear_buffers(void) {
@@ -80,7 +104,7 @@ char* get_status_msg(const char* t, int n_loop, float t_run, bool verbose) {
              t_run, iterations, (iterations == 1) ? "" : "s");
     }
     if (verbose && strlen(msg) > 0) {
-        printf("%s\n", msg);
+        py_print("%s\n", msg);
     }
 
     return msg;
