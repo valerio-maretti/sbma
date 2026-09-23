@@ -69,6 +69,7 @@ extern char* buf_mask_b;
 extern float* gain_per_column;
 
 // Auxiliaries
+void py_print(const char* fmt, ...);
 void clear_buffers(void);
 void clear_support_data(size_t n_cols);
 char* get_status_msg(const char* t, int n_loop, float t_run, bool verbose);
