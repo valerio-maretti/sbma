@@ -518,7 +518,7 @@ static PyObject* solve(PyObject* self, PyObject* args) {
     }
 
     if (verbose && !skip_first_phase) {
-        printf("Time spent to get the starting point: %fs\n", time_spent);
+        py_print("Time spent to get the starting point: %fs\n", time_spent);
     }
 
     if (!initialize_support_data(mat, ar_counts, n_rows, n_cols, initial_assign)) {
@@ -529,7 +529,7 @@ static PyObject* solve(PyObject* self, PyObject* args) {
 
     current_sum = get_current_sum(ar_counts, n_cols);
     if (verbose) {
-        printf("Total sum of selected values: %f\n", current_sum);
+        py_print("Total sum of selected values: %f\n", current_sum);
     }
     STORED_SUM = current_sum;
 
@@ -553,7 +553,7 @@ static PyObject* solve(PyObject* self, PyObject* args) {
         current_sum += increase;
 
         if (verbose) {
-            printf("Time for iteration %d: %.3fs. Current score sum: %.6f, increase: %.6f\n",
+            py_print("Time for iteration %d: %.3fs. Current score sum: %.6f, increase: %.6f\n",
                    n_loop, t_loop, current_sum, increase);
         }
 
