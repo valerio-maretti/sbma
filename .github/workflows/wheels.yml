@@ -7,6 +7,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+# A new push to a branch supersedes whatever is still running for it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_wheels:
     name: ${{ matrix.os }} wheels
@@ -18,8 +23,8 @@ jobs:
           - ubuntu-latest       # manylinux/musllinux x86_64
           - ubuntu-24.04-arm    # manylinux/musllinux aarch64
           - windows-latest      # win_amd64
-          - macos-13            # macosx_x86_64
-          - macos-14            # macosx_arm64
+          - macos-15-intel      # macosx_x86_64 (macos-13 was retired, macos-14 is deprecated)
+          - macos-15            # macosx_arm64
 
     steps:
       - uses: actions/checkout@v4
